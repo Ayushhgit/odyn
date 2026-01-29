@@ -20,29 +20,29 @@ import {
 // HERO_PATHS: Single source of truth for connection line geometry
 // Both SVG and Canvas use this - prevents drift between visual systems
 // ============================================================================
-const MERGE_X = 56; // Positioned below "environment"
-const MERGE_Y = 52; // Below the headline text
+const MERGE_X = 50; // Centered horizontally
+const MERGE_Y = 65; // Vertically below "environment." (in the gap before subtext)
 
 const HERO_PATHS = {
   topLeft1: {
-    svg: `M 15 25 C 28 32, 42 42, ${MERGE_X} ${MERGE_Y}`,
-    bezier: [[15, 25], [28, 32], [42, 42], [MERGE_X, MERGE_Y]] as [number, number][]
+    svg: `M 15 25 C 28 35, 42 48, ${MERGE_X} ${MERGE_Y}`,
+    bezier: [[15, 25], [28, 35], [42, 48], [MERGE_X, MERGE_Y]] as [number, number][]
   },
   topLeft2: {
-    svg: `M 18 30 C 30 38, 45 46, ${MERGE_X} ${MERGE_Y}`,
-    bezier: [[18, 30], [30, 38], [45, 46], [MERGE_X, MERGE_Y]] as [number, number][]
+    svg: `M 18 30 C 30 40, 45 52, ${MERGE_X} ${MERGE_Y}`,
+    bezier: [[18, 30], [30, 40], [45, 52], [MERGE_X, MERGE_Y]] as [number, number][]
   },
   bottomLeft1: {
-    svg: `M 15 78 C 28 70, 42 62, ${MERGE_X} ${MERGE_Y}`,
-    bezier: [[15, 78], [28, 70], [42, 62], [MERGE_X, MERGE_Y]] as [number, number][]
+    svg: `M 15 78 C 28 72, 42 65, ${MERGE_X} ${MERGE_Y}`,
+    bezier: [[15, 78], [28, 72], [42, 65], [MERGE_X, MERGE_Y]] as [number, number][]
   },
   bottomLeft2: {
-    svg: `M 18 73 C 32 66, 46 58, ${MERGE_X} ${MERGE_Y}`,
-    bezier: [[18, 73], [32, 66], [46, 58], [MERGE_X, MERGE_Y]] as [number, number][]
+    svg: `M 18 73 C 32 68, 46 62, ${MERGE_X} ${MERGE_Y}`,
+    bezier: [[18, 73], [32, 68], [46, 62], [MERGE_X, MERGE_Y]] as [number, number][]
   },
   output: {
-    svg: `M ${MERGE_X} ${MERGE_Y} C 66 47, 76 49, 88 ${MERGE_Y}`,
-    bezier: [[MERGE_X, MERGE_Y], [66, 47], [76, 49], [88, MERGE_Y]] as [number, number][]
+    svg: `M ${MERGE_X} ${MERGE_Y} C 62 54, 74 56, 88 ${MERGE_Y}`,
+    bezier: [[MERGE_X, MERGE_Y], [62, 54], [74, 56], [88, MERGE_Y]] as [number, number][]
   }
 } as const;
 
@@ -93,29 +93,53 @@ function GlobalStyles() {
 
 function Nav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-cyan-400 flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path d="M3 12h18" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
-              <path d="M12 3v18" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+    <header className="fixed inset-x-0 top-0 z-50 px-4 py-4">
+      {/* Glassmorphic pill container */}
+      <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-lg shadow-black/20">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-400 flex items-center justify-center">
+            <svg width="16\" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M3 12h18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M12 3v18" stroke="white" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </div>
-          <div className="text-white font-semibold tracking-tight text-lg">Odyn</div>
+          <span className="text-white font-semibold text-lg">
+            Odyn<span className="text-emerald-400">Lab</span>
+          </span>
         </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm text-[#93a0b2]">
-          <a href="#demo" className="hover:text-white">Demo</a>
-          <a href="#features" className="hover:text-white">Features</a>
-          <a href="#architecture" className="hover:text-white">Architecture</a>
-          <a href="#pricing" className="hover:text-white">Pricing</a>
-          <a href="#docs" className="hover:text-white">Docs</a>
+
+        {/* Nav Links */}
+        <nav className="hidden md:flex items-center gap-8 text-sm text-gray-400">
+          <a href="#features" className="hover:text-white transition-colors flex items-center gap-1">
+            Features
+            <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <a href="#demo" className="hover:text-white transition-colors flex items-center gap-1">
+            Use Cases
+            <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <a href="#architecture" className="hover:text-white transition-colors flex items-center gap-1">
+            Resources
+            <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
         </nav>
+
+        {/* Right Actions */}
         <div className="flex items-center gap-3">
-          <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/8 text-sm">Sign in</button>
-          <button className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black font-medium shadow-sm">
-            Get Started
-            <ArrowRight className="w-4 h-4" />
+          <button className="hidden md:inline-flex text-sm text-gray-300 hover:text-white transition-colors">
+            Sign in
+          </button>
+          <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm transition-colors shadow-lg shadow-emerald-500/25">
+            <Zap className="w-4 h-4" />
+            Try Odyn Now
           </button>
         </div>
       </div>
@@ -129,8 +153,8 @@ function Hero() {
       {/* Animated Dot Grid Background */}
       <DotGridBackground />
 
-      {/* Glowing Orbs */}
-      <div className="absolute inset-0 -z-5">
+      {/* Glowing Orbs - above canvas (z-0), below content */}
+      <div className="absolute inset-0 z-[1] pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-emerald-500/5 blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
       </div>
@@ -275,8 +299,8 @@ function DotGridBackground() {
           dotsRef.current.push({
             x,
             y,
-            baseOpacity: 0.04 + falloff * 0.08,
-            currentOpacity: 0.04 + falloff * 0.08
+            baseOpacity: 0.08 + falloff * 0.12,
+            currentOpacity: 0.08 + falloff * 0.12
           });
         }
       }
@@ -360,17 +384,23 @@ function DotGridBackground() {
           });
         }
 
-        // Target opacity combines base + hover + energy
-        const targetOpacity = Math.min(0.55, dot.baseOpacity + hoverIntensity * 0.4 + energyIntensity * 0.3);
+        // Idle pulse to keep background alive
+        const idlePulse = (Math.sin(timestamp * 0.0006) + 1) * 0.02;
+
+        // Target opacity combines base + idle + hover + energy
+        const targetOpacity = Math.min(0.75, dot.baseOpacity + idlePulse + hoverIntensity * 0.4 + energyIntensity * 0.3);
 
         // Smooth transition
         dot.currentOpacity += (targetOpacity - dot.currentOpacity) * 0.15;
 
-        // Draw dot
+        // Draw dot with subtle glow
+        ctx.shadowColor = "rgba(255,255,255,0.15)";
+        ctx.shadowBlur = 4;
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 1.2, 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, 1.6, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${dot.currentOpacity})`;
         ctx.fill();
+        ctx.shadowBlur = 0;
       });
 
       animationRef.current = requestAnimationFrame(animate);
@@ -391,7 +421,7 @@ function DotGridBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 -z-10"
+      className="absolute inset-0 z-0"
       style={{ opacity: 1 }}
     />
   );
@@ -519,12 +549,12 @@ function FloatingDemoCards() {
 
         {/* ========== LAYER 2: BASE PATH LINES ========== */}
 
-        {/* Subtle base lines */}
-        <path d={paths.topLeft1} fill="none" stroke="rgba(139,92,246,0.15)" strokeWidth="0.2" />
-        <path d={paths.topLeft2} fill="none" stroke="rgba(139,92,246,0.12)" strokeWidth="0.15" />
-        <path d={paths.bottomLeft1} fill="none" stroke="rgba(139,92,246,0.15)" strokeWidth="0.2" />
-        <path d={paths.bottomLeft2} fill="none" stroke="rgba(139,92,246,0.12)" strokeWidth="0.15" />
-        <path d={paths.output} fill="none" stroke="rgba(6,182,212,0.18)" strokeWidth="0.25" />
+        {/* Base lines - more prominent */}
+        <path d={paths.topLeft1} fill="none" stroke="rgba(139,92,246,0.35)" strokeWidth="0.4" />
+        <path d={paths.topLeft2} fill="none" stroke="rgba(139,92,246,0.25)" strokeWidth="0.3" />
+        <path d={paths.bottomLeft1} fill="none" stroke="rgba(139,92,246,0.35)" strokeWidth="0.4" />
+        <path d={paths.bottomLeft2} fill="none" stroke="rgba(139,92,246,0.25)" strokeWidth="0.3" />
+        <path d={paths.output} fill="none" stroke="rgba(6,182,212,0.4)" strokeWidth="0.5" />
 
         {/* ========== LAYER 3: ANIMATED ENERGY SEGMENTS ========== */}
 
