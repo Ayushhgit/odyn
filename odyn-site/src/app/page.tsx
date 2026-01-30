@@ -5,16 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   ChevronRight,
-  Sparkles,
   Play,
-  Image as ImageIcon,
-  Zap,
-  Cloud,
+  Film,
+  Type,
+  Palette,
+  Download,
   Cpu,
-  Database,
-  Globe,
+  Cloud,
+  Users,
+  Zap,
   Layers,
-  X
+  Sparkles,
+  Video,
+  FileVideo
 } from "lucide-react";
 
 export default function Page() {
@@ -24,14 +27,12 @@ export default function Page() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return <div className="min-h-screen bg-[#030303]" />;
-  }
+  if (!mounted) return <div className="min-h-screen bg-[#030303]" />;
 
   return (
-    <main className="min-h-screen bg-[#030303] text-white antialiased overflow-x-hidden selection:bg-emerald-500/30">
+    <main className="min-h-screen bg-[#030303] text-white antialiased overflow-x-hidden selection:bg-indigo-500/30">
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap');
         
         .font-serif-italic {
           font-family: 'Playfair Display', serif;
@@ -40,70 +41,67 @@ export default function Page() {
         
         @keyframes float-slow {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(0.5deg); }
+          50% { transform: translateY(-10px) rotate(0.5deg); }
         }
         
         @keyframes float-medium {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
+          50% { transform: translateY(-14px); }
         }
         
         @keyframes pulse-glow {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.2); }
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
         }
         
         @keyframes energy-flow {
-          0% { stroke-dashoffset: 100; }
-          100% { stroke-dashoffset: -100; }
+          0% { stroke-dashoffset: 300; }
+          100% { stroke-dashoffset: 0; }
         }
         
-        @keyframes energy-flow-slow {
-          0% { stroke-dashoffset: 200; }
-          100% { stroke-dashoffset: -200; }
+        @keyframes draw-line {
+          0% { stroke-dashoffset: 1000; }
+          100% { stroke-dashoffset: 0; }
         }
         
         .animate-float-slow {
-          animation: float-slow 8s ease-in-out infinite;
+          animation: float-slow 7s ease-in-out infinite;
         }
         
         .animate-float-medium {
-          animation: float-medium 6s ease-in-out infinite 1s;
+          animation: float-medium 5s ease-in-out infinite 0.5s;
         }
         
-        .animate-pulse-glow {
-          animation: pulse-glow 2s ease-in-out infinite;
+        .line-flow {
+          stroke-dasharray: 20 80;
+          animation: energy-flow 3s linear infinite;
         }
         
-        .energy-line {
+        .line-flow-slow {
           stroke-dasharray: 10 90;
           animation: energy-flow 4s linear infinite;
         }
-        
-        .energy-line-slow {
-          stroke-dasharray: 5 95;
-          animation: energy-flow-slow 6s linear infinite;
-        }
 
         .glass-panel {
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .text-shadow-glow {
-          text-shadow: 0 0 80px rgba(255,255,255,0.1);
+        .neon-glow {
+          box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(99, 102, 241, 0.1);
         }
       `}</style>
       
       <Nav />
       <Hero />
       <LogoBar />
-      <FeaturesSection />
-      <ArchitectureSection />
-      <PricingSection />
-      <FAQSection />
-      <FinalCTA />
+      <Features />
+      <HowItWorks />
+      <Templates />
+      <Pricing />
+      <FAQ />
+      <CTA />
       <Footer />
     </main>
   );
@@ -119,18 +117,18 @@ function Nav() {
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "bg-[#030303]/80 backdrop-blur-xl border-b border-white/[0.04]" : ""}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "bg-[#030303]/90 backdrop-blur-xl border-b border-white/[0.04]" : ""}`}>
       <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-            <span className="text-black font-bold text-lg">F</span>
+          <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center neon-glow">
+            <Video className="w-4 h-4 text-white" />
           </div>
-          <span className="text-white font-semibold text-lg tracking-tight">FLORA</span>
+          <span className="text-white font-semibold text-lg tracking-tight">MotionAI</span>
         </div>
         
         <nav className="hidden md:flex items-center gap-8 text-sm text-white/50 font-medium">
-          {["Company", "Enterprise", "Pricing", "Community", "Resources", "Careers"].map((item) => (
-            <a key={item} href="#" className="hover:text-white transition-colors duration-300">
+          {["Templates", "Features", "Pricing", "API", "Docs"].map((item) => (
+            <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-white transition-colors duration-300">
               {item}
             </a>
           ))}
@@ -138,10 +136,10 @@ function Nav() {
         
         <div className="flex items-center gap-4">
           <button className="hidden md:block text-sm text-white/70 hover:text-white transition-colors">
-            Contact sales
+            Sign in
           </button>
-          <button className="px-5 py-2.5 bg-[#10b981] hover:bg-[#059669] text-black text-sm font-semibold rounded-full transition-all duration-300">
-            Get Started for free
+          <button className="px-5 py-2.5 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold rounded-full transition-all duration-300 neon-glow">
+            Get Started
           </button>
         </div>
       </div>
@@ -152,95 +150,301 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-32 overflow-hidden">
-      {/* Dot Grid Background */}
+      {/* Background */}
       <DotGrid />
-      
-      {/* Gradient Orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-emerald-500/[0.03] rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-cyan-500/[0.02] rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-indigo-500/[0.03] rounded-full blur-[150px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 flex flex-col items-center">
-        
-        {/* Floating Cards Layer */}
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6">
+        {/* Floating Cards & Lines Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none">
-          <FloatingCards />
           <ConnectionLines />
+          <FloatingCards />
         </div>
 
         {/* Center Content */}
-        <div className="relative z-20 flex flex-col items-center text-center max-w-4xl mx-auto pt-12">
+        <div className="relative z-20 flex flex-col items-center text-center max-w-4xl mx-auto pt-16">
           {/* Announcement Pill */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] mb-10"
+            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-10"
           >
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">New</span>
-            </div>
-            <span className="text-sm text-white/60">Inpaint, outpaint, and crop now live on FLORA</span>
-            <button className="text-sm text-white hover:text-emerald-400 transition-colors flex items-center gap-0.5 ml-1">
-              Try now <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+              <span className="text-xs font-semibold text-indigo-300 uppercase tracking-wider">New</span>
+            </span>
+            <span className="text-sm text-white/70">4K rendering now available</span>
+            <ChevronRight className="w-3.5 h-3.5 text-white/50" />
           </motion.div>
 
-          {/* Headline */}
+          {/* Headline with Underlined Creative */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.1] text-shadow-glow"
+            className="text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.1]"
           >
-            Your <span className="font-serif-italic text-white/90">creative</span>
-            <br />
-            environment.
+            Your{' '}
+            <span className="relative inline-block">
+              <span className="font-serif-italic text-white">creative</span>
+              {/* Animated Underline */}
+              <motion.span
+                className="absolute -bottom-2 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-purple-400 to-indigo-500"
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 1, delay: 0.8 }}
+                style={{ originX: 0.5 }}
+              />
+              {/* Glow under line */}
+              <motion.div
+                className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-indigo-500/30 blur-xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+              />
+              {/* Convergence dot */}
+              <motion.div
+                className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </span>{' '}
+            <br className="hidden md:block" />
+            motion studio.
           </motion.h1>
-
-          {/* Underline Glow Effect */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="relative w-[280px] h-[1px] mt-2 mb-8"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full blur-[4px] animate-pulse-glow" />
-            {/* Convergence glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-8 bg-emerald-500/10 rounded-full blur-xl" />
-          </motion.div>
 
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-lg md:text-xl text-white/40 font-light leading-relaxed max-w-xl"
+            className="mt-8 text-xl md:text-2xl text-white/40 font-light leading-relaxed max-w-2xl"
           >
-            Bring your ideas to life faster than ever before.
-            <br />
-            Every creative AI tool, one unified process.
+            Type a prompt. Get cinematic motion graphics in seconds.
+            <br className="hidden md:block" />
+            Powered by Remotion. No After Effects required.
           </motion.p>
 
-          {/* CTA */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-10"
+            className="mt-10 flex flex-col sm:flex-row gap-4"
           >
             <button className="group flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-medium text-base hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
-              Get started for free
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              Start creating free
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="flex items-center gap-3 px-8 py-4 rounded-full font-medium text-base border border-white/10 hover:bg-white/5 transition-colors">
+              <Play className="w-4 h-4" />
+              Watch demo
             </button>
           </motion.div>
         </div>
       </div>
     </section>
+  );
+}
+
+function ConnectionLines() {
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <defs>
+        {/* Gradient for visible flowing lines */}
+        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="rgba(99, 102, 241, 0)" />
+          <stop offset="20%" stopColor="rgba(99, 102, 241, 0.8)" />
+          <stop offset="50%" stopColor="rgba(168, 85, 247, 1)" />
+          <stop offset="80%" stopColor="rgba(99, 102, 241, 0.8)" />
+          <stop offset="100%" stopColor="rgba(99, 102, 241, 0)" />
+        </linearGradient>
+        
+        <filter id="lineGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Visible Base Curves - Thick and prominent */}
+      <path
+        d="M 15 30 C 30 35, 40 48, 50 52"
+        fill="none"
+        stroke="rgba(99, 102, 241, 0.2)"
+        strokeWidth="0.5"
+        filter="url(#lineGlow)"
+      />
+      <path
+        d="M 15 75 C 30 68, 40 58, 50 52"
+        fill="none"
+        stroke="rgba(99, 102, 241, 0.2)"
+        strokeWidth="0.5"
+        filter="url(#lineGlow)"
+      />
+      <path
+        d="M 50 52 C 65 48, 75 45, 88 50"
+        fill="none"
+        stroke="rgba(99, 102, 241, 0.2)"
+        strokeWidth="0.6"
+        filter="url(#lineGlow)"
+      />
+
+      {/* Animated Energy Lines - More visible flowing dashes */}
+      <path
+        d="M 15 30 C 30 35, 40 48, 50 52"
+        fill="none"
+        stroke="url(#flowGradient)"
+        strokeWidth="0.8"
+        filter="url(#lineGlow)"
+        className="line-flow"
+      />
+      <path
+        d="M 15 75 C 30 68, 40 58, 50 52"
+        fill="none"
+        stroke="url(#flowGradient)"
+        strokeWidth="0.8"
+        filter="url(#lineGlow)"
+        className="line-flow-slow"
+      />
+      <path
+        d="M 50 52 C 65 48, 75 45, 88 50"
+        fill="none"
+        stroke="url(#flowGradient)"
+        strokeWidth="1"
+        filter="url(#lineGlow)"
+        className="line-flow"
+        style={{ animationDuration: "2s" }}
+      />
+
+      {/* Nodes at start and end points */}
+      <circle cx="15" cy="30" r="1" fill="rgba(99, 102, 241, 0.5)" />
+      <circle cx="15" cy="75" r="1" fill="rgba(99, 102, 241, 0.5)" />
+      <circle cx="88" cy="50" r="1.5" fill="rgba(168, 85, 247, 0.8)" filter="url(#lineGlow)" />
+    </svg>
+  );
+}
+
+function FloatingCards() {
+  return (
+    <>
+      {/* Top Left - Prompt Input Card */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="absolute top-[18%] left-[8%] md:left-[10%] z-20 pointer-events-auto animate-float-slow"
+      >
+        <div className="relative group">
+          <div className="w-64 p-5 rounded-2xl glass-panel shadow-2xl transition-transform duration-500 hover:scale-105 border border-indigo-500/10">
+            <div className="flex items-center gap-2 mb-3 text-white/40 text-xs uppercase tracking-wider">
+              <Type className="w-3.5 h-3.5" />
+              <span>Prompt Input</span>
+            </div>
+            <div className="space-y-2">
+              <div className="h-2 bg-white/10 rounded-full w-full" />
+              <div className="h-2 bg-white/10 rounded-full w-4/5" />
+              <div className="h-2 bg-indigo-500/30 rounded-full w-3/5" />
+            </div>
+            <div className="mt-4 flex gap-2">
+              <span className="px-2 py-1 rounded-md bg-white/5 text-[10px] text-white/50">4K</span>
+              <span className="px-2 py-1 rounded-md bg-white/5 text-[10px] text-white/50">Neon</span>
+              <span className="px-2 py-1 rounded-md bg-indigo-500/20 text-[10px] text-indigo-300">Generate</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Bottom Left - Template Selection */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="absolute top-[50%] left-[5%] md:left-[8%] z-20 pointer-events-auto animate-float-medium"
+      >
+        <div className="relative group">
+          <div className="w-52 p-4 rounded-2xl glass-panel shadow-2xl transition-transform duration-500 hover:scale-105">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-white/40">Templates</span>
+              <Layers className="w-3.5 h-3.5 text-white/30" />
+            </div>
+            <div className="space-y-2">
+              <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                <Film className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="text-xs text-white/70">Intro</span>
+              </div>
+              <div className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-2">
+                <Type className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="text-xs text-white">Lower Third</span>
+              </div>
+              <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                <FileVideo className="w-3.5 h-3.5 text-white/40" />
+                <span className="text-xs text-white/70">Reel Opener</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Right - Video Output Preview */}
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
+        className="absolute top-[20%] right-[5%] md:right-[8%] z-20 pointer-events-auto animate-float-slow"
+      >
+        <div className="relative group">
+          <div className="w-80 rounded-2xl overflow-hidden glass-panel shadow-2xl border border-indigo-500/10">
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+              </div>
+              <span className="text-xs text-white/40">Preview</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[10px] font-medium text-green-400">HD</span>
+              </div>
+            </div>
+            
+            {/* Video Preview Area */}
+            <div className="relative aspect-video bg-gradient-to-br from-indigo-900/20 to-purple-900/20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=450&fit=crop')] bg-cover bg-center opacity-30 mix-blend-overlay" />
+              <div className="relative z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                <Play className="w-5 h-5 text-white ml-0.5" />
+              </div>
+              {/* Progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+                <div className="h-full w-2/3 bg-gradient-to-r from-indigo-500 to-purple-500" />
+              </div>
+            </div>
+            
+            {/* Info */}
+            <div className="p-4 flex items-center justify-between">
+              <div>
+                <div className="text-xs text-white/70">Final render</div>
+                <div className="text-[10px] text-white/40">1920 × 1080 • 30fps</div>
+              </div>
+              <button className="p-2 rounded-lg bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 transition-colors">
+                <Download className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </>
   );
 }
 
@@ -250,7 +454,6 @@ function DotGrid() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
@@ -262,7 +465,7 @@ function DotGrid() {
     resize();
     window.addEventListener("resize", resize);
     
-    const spacing = 30;
+    const spacing = 35;
     let mouseX = -1000;
     let mouseY = -1000;
     
@@ -273,27 +476,16 @@ function DotGrid() {
     
     window.addEventListener("mousemove", handleMouseMove);
     
-    let frame = 0;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      frame++;
       
-      const cols = Math.ceil(canvas.width / spacing);
-      const rows = Math.ceil(canvas.height / spacing);
-      
-      for (let i = 0; i <= cols; i++) {
-        for (let j = 0; j <= rows; j++) {
-          const x = i * spacing;
-          const y = j * spacing;
-          
+      for (let x = 0; x < canvas.width; x += spacing) {
+        for (let y = 0; y < canvas.height; y += spacing) {
           const distToMouse = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
-          const maxDist = 150;
+          const maxDist = 120;
           const proximity = Math.max(0, 1 - distToMouse / maxDist);
           
-          // Subtle wave
-          const wave = Math.sin(frame * 0.02 + x * 0.01) * Math.cos(frame * 0.02 + y * 0.01) * 0.02;
-          
-          let opacity = 0.03 + wave;
+          let opacity = 0.025;
           opacity += proximity * 0.15;
           
           // Fade edges
@@ -301,10 +493,10 @@ function DotGrid() {
           const centerY = canvas.height / 2;
           const distToCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
           const maxCenterDist = Math.sqrt(centerX ** 2 + centerY ** 2);
-          opacity *= (1 - distToCenter / maxCenterDist * 0.5);
+          opacity *= (1 - distToCenter / maxCenterDist * 0.6);
           
           ctx.beginPath();
-          ctx.arc(x, y, 1, 0, Math.PI * 2);
+          ctx.arc(x, y, 1.2, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
           ctx.fill();
         }
@@ -324,221 +516,18 @@ function DotGrid() {
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
 }
 
-function ConnectionLines() {
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full z-10 pointer-events-none"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="rgba(255,255,255,0)" />
-          <stop offset="50%" stopColor="rgba(255,255,255,0.3)" />
-          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-        </linearGradient>
-        
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="0.3" result="coloredBlur"/>
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-      
-      {/* Top left to center */}
-      <path
-        d="M 18 28 C 30 35, 42 45, 50 52"
-        fill="none"
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth="0.15"
-      />
-      <path
-        d="M 18 28 C 30 35, 42 45, 50 52"
-        fill="none"
-        stroke="url(#lineGrad)"
-        strokeWidth="0.3"
-        filter="url(#glow)"
-        className="energy-line"
-      />
-      
-      {/* Bottom left to center */}
-      <path
-        d="M 18 72 C 30 65, 42 55, 50 52"
-        fill="none"
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth="0.15"
-      />
-      <path
-        d="M 18 72 C 30 65, 42 55, 50 52"
-        fill="none"
-        stroke="url(#lineGrad)"
-        strokeWidth="0.3"
-        filter="url(#glow)"
-        className="energy-line-slow"
-      />
-      
-      {/* Center to right */}
-      <path
-        d="M 50 52 C 60 48, 72 45, 82 52"
-        fill="none"
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth="0.2"
-      />
-      <path
-        d="M 50 52 C 60 48, 72 45, 82 52"
-        fill="none"
-        stroke="url(#lineGrad)"
-        strokeWidth="0.4"
-        filter="url(#glow)"
-        className="energy-line"
-        style={{ animationDuration: "3s" }}
-      />
-      
-      {/* Center point */}
-      <circle cx="50" cy="52" r="0.5" fill="white" filter="url(#glow)">
-        <animate attributeName="r" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  );
-}
-
-function FloatingCards() {
-  return (
-    <>
-      {/* Top Left - Red Shoe Card */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="absolute top-[15%] left-[8%] md:left-[12%] z-20 pointer-events-auto animate-float-slow"
-      >
-        <div className="relative group">
-          <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden glass-panel shadow-2xl transition-transform duration-500 hover:scale-105">
-            {/* Red Background */}
-            <div className="absolute inset-0 bg-[#dc2626]" />
-            
-            {/* Shoe Image */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-full h-full relative">
-                 <img 
-                  src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&h=400&fit=crop" 
-                  alt="Red Shoe"
-                  className="w-full h-full object-cover mix-blend-overlay opacity-90"
-                />
-              </div>
-            </div>
-            
-            {/* Label */}
-            <div className="absolute top-4 left-4 px-3 py-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-white/10">
-              <span className="text-xs font-semibold text-white">Monk Running</span>
-            </div>
-            
-            {/* Percentage */}
-            <div className="absolute top-4 right-4 text-xs font-medium text-white/80">60%</div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Bottom Left - Businessman Card */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="absolute top-[45%] left-[5%] md:left-[10%] z-20 pointer-events-auto animate-float-medium"
-      >
-        <div className="relative group">
-          <div className="w-40 h-52 md:w-44 md:h-60 rounded-2xl overflow-hidden glass-panel shadow-2xl transition-transform duration-500 hover:scale-105">
-            <img 
-              src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=500&fit=crop" 
-              alt="Businessman"
-              className="w-full h-full object-cover"
-            />
-            
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            
-            {/* Label */}
-            <div className="absolute top-4 left-4">
-              <span className="text-xs font-medium text-white/90">Image Gen</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Right - Output Card with Variants */}
-      <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        className="absolute top-[20%] right-[5%] md:right-[8%] z-20 pointer-events-auto animate-float-slow"
-      >
-        <div className="relative group">
-          <div className="w-72 md:w-80 rounded-2xl overflow-hidden glass-panel shadow-2xl">
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-white/[0.02]">
-              <span className="text-xs font-medium text-white/60">Output</span>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-medium text-emerald-400">Live</span>
-              </div>
-            </div>
-            
-            {/* Main Image - Businessman */}
-            <div className="relative h-48 bg-[#1a1a1a]">
-              <img 
-                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=400&fit=crop" 
-                alt="Output"
-                className="w-full h-full object-cover opacity-80"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent" />
-            </div>
-            
-            {/* Thumbnail Grid */}
-            <div className="grid grid-cols-3 gap-1 p-1 bg-[#0a0a0a]">
-              <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-[#dc2626]">
-                <img 
-                  src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=150&fit=crop" 
-                  alt="Variant 1"
-                  className="w-full h-full object-cover mix-blend-overlay"
-                />
-              </div>
-              <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-[#84cc16]">
-                <img 
-                  src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=150&fit=crop" 
-                  alt="Variant 2"
-                  className="w-full h-full object-cover mix-blend-multiply"
-                />
-              </div>
-              <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-white">
-                <img 
-                  src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=200&h=150&fit=crop" 
-                  alt="Variant 3"
-                  className="w-full h-full object-cover mix-blend-multiply"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </>
-  );
-}
-
 function LogoBar() {
-  const logos = ["Kornely", "Alibaba", "Superside", "Stanford", "USC", "Milk", "Harvey", "R+V", "Tomorrow Bureau", "Journee", "Base", "BILT"];
+  const logos = ["YouTube", "Netflix", "Adobe", "Spotify", "TikTok", "Instagram", "Vimeo", "Wistia"];
   
   return (
-    <section className="py-12 border-y border-white/[0.04] bg-white/[0.01] overflow-hidden relative">
+    <section className="py-10 border-y border-white/[0.04] bg-white/[0.01] overflow-hidden relative">
       <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#030303] to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#030303] to-transparent z-10" />
       
-      <div className="flex animate-scroll hover:[animation-play-state:paused]">
+      <div className="flex animate-scroll">
         {[...logos, ...logos].map((logo, i) => (
-          <div key={i} className="flex-none px-8 md:px-12">
-            <span className="text-sm md:text-base text-white/20 font-medium tracking-wide uppercase whitespace-nowrap">
+          <div key={i} className="flex-none px-12">
+            <span className="text-base text-white/20 font-semibold tracking-wider uppercase">
               {logo}
             </span>
           </div>
@@ -551,31 +540,31 @@ function LogoBar() {
           100% { transform: translateX(-50%); }
         }
         .animate-scroll {
-          animation: scroll 30s linear infinite;
+          animation: scroll 25s linear infinite;
         }
       `}</style>
     </section>
   );
 }
 
-function FeaturesSection() {
+function Features() {
   const features = [
-    { icon: <Sparkles className="w-5 h-5" />, title: "Inpainting", desc: "Remove and replace elements with AI precision" },
-    { icon: <Layers className="w-5 h-5" />, title: "Outpainting", desc: "Extend images beyond their boundaries" },
-    { icon: <Zap className="w-5 h-5" />, title: "Smart Crop", desc: "AI-powered composition aware framing" },
-    { icon: <Cloud className="w-5 h-5" />, title: "Cloud Sync", desc: "Real-time collaboration across devices" },
-    { icon: <Cpu className="w-5 h-5" />, title: "4K Exports", desc: "High resolution output for any project" },
-    { icon: <Database className="w-5 h-5" />, title: "Version History", desc: "Never lose your creative progress" }
+    { icon: <Sparkles className="w-5 h-5" />, title: "Prompt to Video", desc: "Type naturally, get cinematic motion graphics instantly" },
+    { icon: <Film className="w-5 h-5" />, title: "Remotion Powered", desc: "Deterministic, programmable motion design logic" },
+    { icon: <Layers className="w-5 h-5" />, title: "10+ Templates", desc: "Intros, lower thirds, subtitles, quote videos, reels" },
+    { icon: <Zap className="w-5 h-5" />, title: "4K Renders", desc: "Studio quality exports in MP4, MOV formats" },
+    { icon: <Cloud className="w-5 h-5" />, title: "Cloud Queue", desc: "Batch processing with priority rendering" },
+    { icon: <Palette className="w-5 h-5" />, title: "Brand Kits", desc: "Save logos, colors, and fonts for consistency" }
   ];
 
   return (
-    <section className="py-32 px-6 max-w-7xl mx-auto">
+    <section id="features" className="py-32 px-6 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-16">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-4">Tools that work as one</h2>
-        <p className="text-white/40">Seamlessly integrated AI tools for your creative workflow</p>
+        <h2 className="text-3xl md:text-4xl font-semibold mb-4">Built for video creators</h2>
+        <p className="text-white/40">Everything you need to create professional motion graphics without After Effects</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {features.map((f, i) => (
           <motion.div
             key={i}
@@ -583,9 +572,9 @@ function FeaturesSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer"
+            className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-indigo-500/20 transition-all duration-300"
           >
-            <div className="w-10 h-10 rounded-lg bg-white/[0.03] flex items-center justify-center text-white/40 mb-4 group-hover:text-emerald-400 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               {f.icon}
             </div>
             <h3 className="font-medium text-white mb-1">{f.title}</h3>
@@ -597,93 +586,121 @@ function FeaturesSection() {
   );
 }
 
-function ArchitectureSection() {
+function HowItWorks() {
+  const steps = [
+    { num: "01", title: "Write Prompt", desc: "Describe your video in natural language" },
+    { num: "02", title: "Pick Template", desc: "Choose from cinematic presets" },
+    { num: "03", title: "Generate", desc: "AI builds your motion graphics" },
+    { num: "04", title: "Export", desc: "Download 4K MP4 instantly" }
+  ];
+
   return (
     <section className="py-32 bg-white/[0.01] border-y border-white/[0.04]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-semibold mb-6 leading-tight">
-              Built for the
-              <br />
-              <span className="text-white/40">future of creation</span>
-            </h2>
-            <p className="text-lg text-white/30 mb-8 leading-relaxed">
-              Enterprise-grade infrastructure designed for creative teams. Scale from individual projects to studio-wide deployments.
-            </p>
-            
-            <div className="space-y-4">
-              {[
-                { label: "Cloud GPU", value: "A100 H100" },
-                { label: "Inference", value: "<100ms" },
-                { label: "Uptime", value: "99.99%" }
-              ].map((stat, i) => (
-                <div key={i} className="flex items-center justify-between py-4 border-b border-white/[0.06]">
-                  <span className="text-white/40">{stat.label}</span>
-                  <span className="text-white font-medium">{stat.value}</span>
-                </div>
-              ))}
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4">How it works</h2>
+          <p className="text-white/40">From prompt to video in seconds</p>
+        </div>
+        
+        <div className="grid md:grid-cols-4 gap-8">
+          {steps.map((step, i) => (
+            <div key={i} className="relative">
+              <div className="text-5xl font-bold text-white/5 mb-4">{step.num}</div>
+              <h3 className="font-medium text-white mb-2">{step.title}</h3>
+              <p className="text-sm text-white/30">{step.desc}</p>
+              {i < 3 && (
+                <div className="hidden md:block absolute top-8 left-full w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent" />
+              )}
             </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-4 mt-8">
-              <div className="h-40 rounded-2xl bg-emerald-500/[0.03] border border-emerald-500/20 p-6 flex flex-col justify-end">
-                <Cloud className="w-6 h-6 text-emerald-400/60 mb-2" />
-                <div className="text-sm font-medium text-white/80">Cloud Native</div>
-              </div>
-              <div className="h-48 rounded-2xl bg-cyan-500/[0.03] border border-cyan-500/20 p-6 flex flex-col justify-end">
-                <Globe className="w-6 h-6 text-cyan-400/60 mb-2" />
-                <div className="text-sm font-medium text-white/80">Global Edge</div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="h-48 rounded-2xl bg-purple-500/[0.03] border border-purple-500/20 p-6 flex flex-col justify-end">
-                <Cpu className="w-6 h-6 text-purple-400/60 mb-2" />
-                <div className="text-sm font-medium text-white/80">AI Engine</div>
-              </div>
-              <div className="h-40 rounded-2xl bg-amber-500/[0.03] border border-amber-500/20 p-6 flex flex-col justify-end">
-                <Database className="w-6 h-6 text-amber-400/60 mb-2" />
-                <div className="text-sm font-medium text-white/80">Vector DB</div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function PricingSection() {
+function Templates() {
+  const templates = [
+    { name: "Channel Intro", tag: "YouTube", color: "from-red-500/20 to-orange-500/10" },
+    { name: "Lower Third", tag: "News", color: "from-blue-500/20 to-cyan-500/10" },
+    { name: "Quote Video", tag: "Social", color: "from-purple-500/20 to-pink-500/10" },
+    { name: "Reel Opener", tag: "Instagram", color: "from-indigo-500/20 to-purple-500/10" }
+  ];
+
+  return (
+    <section id="templates" className="py-32 px-6 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4">Templates</h2>
+          <p className="text-white/40">Professional starting points for any content</p>
+        </div>
+        <button className="mt-4 md:mt-0 text-sm text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
+          View all templates <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {templates.map((t, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="group relative aspect-[4/3] rounded-2xl overflow-hidden glass-panel cursor-pointer hover:scale-[1.02] transition-transform"
+          >
+            <div className={`absolute inset-0 bg-gradient-to-br ${t.color} opacity-50`} />
+            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Play className="w-8 h-8 text-white/50 group-hover:text-white/80 group-hover:scale-110 transition-all" />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="text-xs text-white/50 mb-1">{t.tag}</div>
+              <div className="font-medium text-white">{t.name}</div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Pricing() {
   const plans = [
     {
-      name: "Starter",
+      name: "Free",
       price: "0",
-      desc: "For individuals exploring AI",
-      features: ["Watermarked exports", "720p output", "Community support", "5 projects"],
+      period: "Forever",
+      desc: "Perfect for trying out",
+      features: ["Watermarked exports", "720p resolution", "5 renders/month", "Community support"],
+      cta: "Start Free",
       popular: false
     },
     {
       name: "Pro",
-      price: "29",
-      desc: "For professional creators",
-      features: ["No watermark", "4K output", "Priority queue", "Unlimited projects", "API access"],
+      price: "399",
+      period: "/month",
+      desc: "For serious creators",
+      features: ["No watermark", "1080p & 4K", "Unlimited renders", "Priority queue", "API access"],
+      cta: "Get Pro",
       popular: true
     },
     {
       name: "Studio",
-      price: "99",
-      desc: "For teams and studios",
-      features: ["Everything in Pro", "8K output", "Custom models", "Team collaboration", "Dedicated support"],
+      price: "1,499",
+      period: "/month",
+      desc: "For teams & agencies",
+      features: ["Everything in Pro", "Custom templates", "Team collaboration", "Brand kits", "Dedicated support"],
+      cta: "Contact Sales",
       popular: false
     }
   ];
 
   return (
-    <section className="py-32 px-6 max-w-6xl mx-auto">
+    <section id="pricing" className="py-32 px-6 max-w-6xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-16">
         <h2 className="text-3xl md:text-4xl font-semibold mb-4">Simple pricing</h2>
-        <p className="text-white/40">Upgrade or downgrade at any time</p>
+        <p className="text-white/40">Upgrade or downgrade anytime. No hidden fees.</p>
       </div>
       
       <div className="grid md:grid-cols-3 gap-6">
@@ -694,10 +711,10 @@ function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className={`relative rounded-3xl p-8 ${plan.popular ? 'bg-white text-black' : 'bg-white/[0.02] border border-white/[0.06]'}`}
+            className={`relative rounded-3xl p-8 ${plan.popular ? 'bg-white text-black' : 'glass-panel'}`}
           >
             {plan.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-emerald-500 text-black text-xs font-bold rounded-full">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-indigo-500 text-white text-xs font-bold rounded-full">
                 MOST POPULAR
               </div>
             )}
@@ -706,29 +723,25 @@ function PricingSection() {
               <h3 className={`text-lg font-semibold mb-1 ${plan.popular ? 'text-black' : 'text-white'}`}>
                 {plan.name}
               </h3>
-              <p className={`text-sm ${plan.popular ? 'text-black/50' : 'text-white/30'}`}>
-                {plan.desc}
-              </p>
+              <p className={`text-sm ${plan.popular ? 'text-black/50' : 'text-white/30'}`}>{plan.desc}</p>
             </div>
             
             <div className="mb-6">
-              <span className={`text-4xl font-bold ${plan.popular ? 'text-black' : 'text-white'}`}>
-                ${plan.price}
-              </span>
-              <span className={plan.popular ? 'text-black/40' : 'text-white/30'}>/mo</span>
+              <span className={`text-4xl font-bold ${plan.popular ? 'text-black' : 'text-white'}`}>₹{plan.price}</span>
+              <span className={plan.popular ? 'text-black/40' : 'text-white/30'}>{plan.period}</span>
             </div>
             
             <ul className="space-y-3 mb-8">
               {plan.features.map((f, j) => (
                 <li key={j} className={`flex items-center gap-3 text-sm ${plan.popular ? 'text-black/60' : 'text-white/40'}`}>
-                  <div className={`w-1 h-1 rounded-full ${plan.popular ? 'bg-emerald-600' : 'bg-emerald-500'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${plan.popular ? 'bg-indigo-600' : 'bg-indigo-500'}`} />
                   {f}
                 </li>
               ))}
             </ul>
             
             <button className={`w-full py-3 rounded-xl font-medium transition-colors ${plan.popular ? 'bg-black text-white hover:bg-black/90' : 'bg-white/10 text-white hover:bg-white/15'}`}>
-              {plan.popular ? 'Get Started' : 'Choose Plan'}
+              {plan.cta}
             </button>
           </motion.div>
         ))}
@@ -737,11 +750,12 @@ function PricingSection() {
   );
 }
 
-function FAQSection() {
+function FAQ() {
   const faqs = [
-    { q: "How does the AI inpainting work?", a: "Our AI analyzes the surrounding context of any selected area and seamlessly fills it with relevant content, matching lighting, texture, and perspective." },
-    { q: "Can I use FLORA commercially?", a: "Yes, all paid plans include commercial usage rights. The Starter plan is for personal use only." },
-    { q: "What file formats are supported?", a: "We support all major formats including PSD, PNG, JPG, WebP, TIFF, and export to MP4 for video content." }
+    { q: "How is this different from Canva or Runway?", a: "Unlike pixel-based tools, we use Remotion to generate deterministic, programmable motion design. You get editable code-based templates that render perfectly every time." },
+    { q: "What video formats are supported?", a: "We export MP4 and MOV in 1080p and 4K resolution, at 30fps or 60fps. Pro and Studio plans support transparent backgrounds (Alpha channel)." },
+    { q: "Can I use my own brand assets?", a: "Yes! Pro plans can upload logos, custom fonts, and set brand colors. Studio plans get advanced brand kits shared across team members." },
+    { q: "Is there an API for bulk generation?", a: "Studio plans include full API access with webhooks, perfect for generating thousands of personalized videos programmatically." }
   ];
 
   return (
@@ -769,9 +783,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors"
       >
         <span className="font-medium text-white/90">{q}</span>
-        <div className={`w-6 h-6 rounded-full border border-white/10 flex items-center justify-center transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>
-          <span className="text-lg leading-none text-white/60">+</span>
-        </div>
+        <span className={`text-2xl leading-none text-white/40 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       
       <AnimatePresence>
@@ -792,22 +804,24 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-function FinalCTA() {
+function CTA() {
   return (
-    <section className="py-32 px-6 text-center">
-      <div className="max-w-3xl mx-auto">
+    <section className="py-32 px-6 text-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-indigo-500/5" />
+      <div className="max-w-3xl mx-auto relative">
         <h2 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">
           Ready to create?
         </h2>
         <p className="text-lg text-white/40 mb-10">
-          Join thousands of creators using FLORA today.
+          Join thousands of YouTubers, podcasters, and editors using MotionAI.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button className="px-8 py-4 bg-white text-black rounded-full font-medium hover:scale-105 transition-transform shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
-            Get started for free
+            Start creating free
           </button>
-          <button className="px-8 py-4 border border-white/10 rounded-full font-medium hover:bg-white/5 transition-colors">
-            View documentation
+          <button className="px-8 py-4 border border-white/10 rounded-full font-medium hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+            <Play className="w-4 h-4" />
+            Watch demo
           </button>
         </div>
       </div>
@@ -820,20 +834,21 @@ function Footer() {
     <footer className="py-12 border-t border-white/[0.04] bg-[#020202]">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-            <span className="text-black font-bold text-xs">F</span>
+          <div className="w-6 h-6 bg-indigo-500 rounded flex items-center justify-center">
+            <Video className="w-3 h-3 text-white" />
           </div>
-          <span className="text-white font-semibold text-sm">FLORA</span>
+          <span className="text-white font-semibold text-sm">MotionAI</span>
         </div>
         
         <div className="flex gap-8 text-sm text-white/30">
           <a href="#" className="hover:text-white transition-colors">Privacy</a>
           <a href="#" className="hover:text-white transition-colors">Terms</a>
+          <a href="#" className="hover:text-white transition-colors">API Docs</a>
           <a href="#" className="hover:text-white transition-colors">Contact</a>
         </div>
         
         <div className="text-sm text-white/20">
-          © {new Date().getFullYear()} FLORA AI
+          © {new Date().getFullYear()} MotionAI
         </div>
       </div>
     </footer>
