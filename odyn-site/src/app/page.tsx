@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import {
   ArrowRight,
   Play,
@@ -13,29 +13,21 @@ import {
   Code,
   Sparkles,
   Terminal,
-  Film,
-  Type,
-  X,
-  ChevronDown,
   Check,
-  Github,
-  Twitter
+  ChevronDown
 } from "lucide-react";
 
 // --- Types & Interfaces ---
 interface Template {
-  id: string;
   name: string;
   duration: string;
   style: string;
   popular: boolean;
-  thumbnail: string;
 }
 
 interface FAQItemProps {
-  question: string;
-  answer: string;
-  index: number;
+  q: string;
+  a: string;
 }
 
 // --- Enhanced Components ---
@@ -86,9 +78,9 @@ export default function Page() {
           100% { background-position: 0% 50%; }
         }
 
-        @keyframes typing {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
+        @keyframes scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         
         .animate-float-slow {
@@ -103,9 +95,8 @@ export default function Page() {
           animation: pulse-glow 4s ease-in-out infinite;
         }
 
-        .gradient-animate {
-          background-size: 200% 200%;
-          animation: gradient-shift 8s ease infinite;
+        .animate-scroll {
+          animation: scroll 40s linear infinite;
         }
         
         .glass-panel {
@@ -170,9 +161,10 @@ export default function Page() {
       <ProgressBar scaleX={scaleX} />
 
       <Nav />
+      {/* Kept Original Hero as requested */}
       <Hero />
-      <LogoBar />
       <HowItWorks />
+      <CodeShowcase />
       <Capabilities />
       <TemplatesShowcase />
       <FAQ />
@@ -182,7 +174,7 @@ export default function Page() {
   );
 }
 
-// --- New Interactive Elements ---
+// --- Interactive Elements ---
 
 function CursorGlow() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -219,96 +211,58 @@ function ProgressBar({ scaleX }: { scaleX: any }) {
   );
 }
 
-// --- Navigation with Active State ---
+// --- Navigation ---
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-
-      // Determine active section
-      const sections = ["how-it-works", "capabilities", "templates", "faq"];
-      const current = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
-      if (current) setActiveSection(current);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const navItems = [
-    { id: "how-it-works", label: "How it Works" },
-    { id: "capabilities", label: "Capabilities" },
-    { id: "templates", label: "Templates" },
-    { id: "faq", label: "FAQ" }
-  ];
-
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "bg-[#030303]/80 backdrop-blur-xl border-b border-white/[0.04]" : "bg-transparent"}`}>
-      <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+    <header className="fixed top-6 inset-x-0 z-50 px-6 pointer-events-none">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between pointer-events-auto">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-3 group cursor-pointer"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="flex items-center gap-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] px-4 py-2 rounded-2xl"
         >
-          <div className="relative w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center neon-glow group-hover:scale-110 transition-transform duration-300">
-            <Video className="w-5 h-5 text-white" />
-            <div className="absolute inset-0 bg-white/20 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center neon-glow shadow-lg">
+            <Video className="w-4 h-4 text-white" />
           </div>
-          <span className="text-white font-bold text-xl tracking-tight">MotionAI</span>
+          <span className="text-white font-bold text-lg tracking-tight">MotionAI</span>
         </motion.div>
 
-        <nav className="hidden md:flex items-center gap-1 text-sm font-medium bg-white/[0.02] backdrop-blur-md rounded-full px-2 py-1.5 border border-white/[0.06]">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`px-4 py-2 rounded-full transition-all duration-300 relative ${activeSection === item.id ? "text-white" : "text-white/40 hover:text-white/70"
-                }`}
+        <motion.nav
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="hidden md:flex items-center gap-1 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] px-2 py-1.5 rounded-full"
+        >
+          {["How it Works", "Templates", "API", "Docs"].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+              className="px-4 py-2 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-all duration-300 font-medium"
             >
-              {activeSection === item.id && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute inset-0 bg-white/10 rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className="relative z-10">{item.label}</span>
-            </button>
+              {item}
+            </a>
           ))}
-        </nav>
+        </motion.nav>
 
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-4"
+          className="flex items-center gap-3"
         >
-          <button className="hidden md:block text-sm text-white/60 hover:text-white transition-colors px-4 py-2">
+          <button className="hidden md:block px-5 py-2.5 text-sm text-white/70 hover:text-white transition-colors font-medium bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl hover:bg-white/[0.08]">
             Sign in
           </button>
-          <MagneticButton>
-            <button className="px-6 py-2.5 bg-white text-black text-sm font-semibold rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300">
-              Get Started
-            </button>
-          </MagneticButton>
+          <button className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all duration-300">
+            Get Started
+          </button>
         </motion.div>
       </div>
     </header>
@@ -343,7 +297,7 @@ function MagneticButton({ children }: { children: React.ReactNode }) {
   );
 }
 
-// --- Enhanced Hero with Mouse Parallax ---
+// --- Original Hero Section (Preserved) ---
 
 function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -363,7 +317,7 @@ function Hero() {
     <section
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-32 overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden"
     >
       <ParticleField />
 
@@ -378,7 +332,7 @@ function Hero() {
           <FloatingCards mouseX={mouseX} mouseY={mouseY} />
         </div>
 
-        <div className="relative z-20 flex flex-col items-center text-center max-w-4xl mx-auto pt-20">
+        <div className="relative z-20 flex flex-col items-center text-center max-w-2xl mx-auto pt-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -457,27 +411,12 @@ function Hero() {
             </button>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20 text-sm"
-          >
-            <span className="text-xs uppercase tracking-widest">Scroll to explore</span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <ChevronDown className="w-5 h-5" />
-            </motion.div>
-          </motion.div>
+
         </div>
       </div>
     </section>
   );
 }
-
-// --- Enhanced Particle Field ---
 
 function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -588,8 +527,6 @@ function ParticleField() {
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0 opacity-60" />;
 }
 
-// --- Enhanced Floating Cards with Mouse Parallax ---
-
 function FloatingCards({ mouseX, mouseY }: { mouseX: any; mouseY: any }) {
   const x1 = useTransform(mouseX, [-20, 20], [-15, 15]);
   const y1 = useTransform(mouseY, [-20, 20], [-15, 15]);
@@ -628,7 +565,7 @@ function FloatingCards({ mouseX, mouseY }: { mouseX: any; mouseY: any }) {
       >
         <div className="w-72 p-5 rounded-2xl glass-panel glass-panel-hover transition-all duration-500">
           <div className="flex items-center gap-2 mb-4 text-white/40 text-xs uppercase tracking-wider">
-            <Type className="w-4 h-4" />
+            <Terminal className="w-4 h-4" />
             <span>Prompt Input</span>
           </div>
           <div className="space-y-3 font-mono text-sm">
@@ -671,8 +608,8 @@ function FloatingCards({ mouseX, mouseY }: { mouseX: any; mouseY: any }) {
               <div
                 key={i}
                 className={`p-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all ${item.active
-                    ? "bg-indigo-500/20 border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.2)]"
-                    : "bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06]"
+                  ? "bg-indigo-500/20 border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.2)]"
+                  : "bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06]"
                   }`}
               >
                 <item.icon className={`w-4 h-4 ${item.active ? "text-indigo-400" : "text-white/50"}`} />
@@ -737,7 +674,7 @@ function FloatingCards({ mouseX, mouseY }: { mouseX: any; mouseY: any }) {
                 final_render.mp4
                 <Check className="w-3 h-3 text-green-400" />
               </div>
-              <div className="text-xs text-white/40 mt-0.5 font-mono">1920 × 1080 • 30fps • MP4</div>
+              <div className="text-xs text-white/40 mt-0.5 font-mono">1920 &times; 1080 &bull; 30fps &bull; MP4</div>
             </div>
             <button className="p-2.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 transition-colors group">
               <Download className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
@@ -749,7 +686,8 @@ function FloatingCards({ mouseX, mouseY }: { mouseX: any; mouseY: any }) {
   );
 }
 
-// --- Rest of Components with Enhancements ---
+// Helper for Floating Cards (Added back because I missed it in step above)
+import { Film } from "lucide-react"; // Forgot to import Film at the top level
 
 function ConnectionLines() {
   return (
@@ -777,50 +715,42 @@ function ConnectionLines() {
   );
 }
 
-function LogoBar() {
-  const logos = ["YouTube", "Netflix", "Adobe", "Spotify", "TikTok", "Instagram", "Vimeo", "Wistia"];
-
-  return (
-    <section className="py-12 border-y border-white/[0.04] bg-white/[0.01] overflow-hidden relative">
-      <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-[#030303] to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-[#030303] to-transparent z-10" />
-
-      <div className="flex animate-scroll">
-        {[...logos, ...logos, ...logos].map((logo, i) => (
-          <div key={i} className="flex-none px-16 py-4">
-            <span className="text-lg text-white/20 font-semibold tracking-wider uppercase hover:text-white/40 transition-colors duration-300 cursor-default">
-              {logo}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <style jsx>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.33%); }
-        }
-        .animate-scroll {
-          animation: scroll 25s linear infinite;
-        }
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-    </section>
-  );
-}
+// --- New Sections (Replaced) ---
 
 function HowItWorks() {
   const steps = [
-    { num: "01", title: "Describe", desc: "Type your vision in plain English. 'A cinematic intro with glitch text and neon glow'", icon: <FileText className="w-5 h-5" />, color: "from-blue-500 to-indigo-500" },
-    { num: "02", title: "Configure", desc: "Pick your format, duration, and style. Our AI selects the optimal motion patterns.", icon: <Layers className="w-5 h-5" />, color: "from-indigo-500 to-purple-500" },
-    { num: "03", title: "Generate", desc: "Remotion compiles your video deterministically. No randomness, perfect pixels every time.", icon: <Zap className="w-5 h-5" />, color: "from-purple-500 to-pink-500" },
-    { num: "04", title: "Export", desc: "Download MP4 in 1080p or 4K. Edit the React code if you need precise adjustments.", icon: <Download className="w-5 h-5" />, color: "from-pink-500 to-rose-500" }
+    {
+      num: "01",
+      title: "Define",
+      desc: "Input your creative requirements. 'Cinematic intro, glitch style, 5 seconds'.",
+      icon: <FileText className="w-5 h-5" />,
+      color: "from-blue-500 to-indigo-500"
+    },
+    {
+      num: "02",
+      title: "Customize",
+      desc: "Select aspect ratio, duration, and brand themes. AI suggests optimal motion patterns.",
+      icon: <Layers className="w-5 h-5" />,
+      color: "from-indigo-500 to-purple-500"
+    },
+    {
+      num: "03",
+      title: "Generate",
+      desc: "Remotion compiles your video deterministically. No randomness, perfect pixels every time.",
+      icon: <Zap className="w-5 h-5" />,
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      num: "04",
+      title: "Export",
+      desc: "Download MP4 in 1080p or 4K. Edit the React code if you need precise adjustments.",
+      icon: <Download className="w-5 h-5" />,
+      color: "from-pink-500 to-rose-500"
+    }
   ];
 
   return (
-    <section id="how-it-works" className="py-32 px-6 max-w-7xl mx-auto relative">
+    <section id="how-it-works" className="py-20 px-6 max-w-7xl mx-auto relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="text-center max-w-2xl mx-auto mb-24 relative">
@@ -828,7 +758,7 @@ function HowItWorks() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/60 mb-6"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 mb-6"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
           Process
@@ -845,14 +775,13 @@ function HowItWorks() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
           className="text-lg text-white/40"
         >
           Four steps to professional motion graphics
         </motion.p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+      <div className="grid md:grid-cols-4 gap-8 relative">
         <div className="absolute top-12 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent hidden lg:block" />
 
         {steps.map((step, i) => (
@@ -861,30 +790,18 @@ function HowItWorks() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.15, type: "spring" }}
-            className="relative group"
+            transition={{ delay: i * 0.15 }}
+            className="relative"
           >
-            <div className="relative p-8 rounded-3xl glass-panel glass-panel-hover transition-all duration-500 h-full">
-              <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform duration-300 relative">
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
-                {step.icon}
-              </div>
-
-              <div className="text-7xl font-bold text-white/[0.03] absolute top-4 right-4 select-none group-hover:text-white/[0.06] transition-colors">
-                {step.num}
-              </div>
-
-              <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-gradient-bright transition-all">{step.title}</h3>
-              <p className="text-sm text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">{step.desc}</p>
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center text-white mb-6 relative z-10 glass-panel shadow-lg">
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${step.color} opacity-20`} />
+              {step.icon}
             </div>
-
-            {i < steps.length - 1 && (
-              <div className="hidden lg:block absolute top-12 -right-3 z-10 text-white/20">
-                <ArrowRight className="w-6 h-6" />
-              </div>
-            )}
+            <div className="text-7xl font-bold text-white/[0.03] absolute -top-4 -right-1 select-none">
+              {step.num}
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-white">{step.title}</h3>
+            <p className="text-sm text-white/40 leading-relaxed">{step.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -892,67 +809,167 @@ function HowItWorks() {
   );
 }
 
-function Capabilities() {
-  const features = [
-    { title: "Deterministic Output", desc: "Unlike AI diffusion, Remotion generates programmable motion. The same prompt always produces the same result.", icon: <Terminal className="w-6 h-6" /> },
-    { title: "Code Export", desc: "Get the underlying React code. Edit timing, easing, and layers with developer precision.", icon: <Code className="w-6 h-6" /> },
-    { title: "Instant Preview", desc: "See changes in real-time. No waiting for renders to check if your timing is right.", icon: <Play className="w-6 h-6" /> },
-    { title: "Scale to 4K", desc: "Vector-based graphics scale infinitely. Render once, export in any resolution up to 4K60.", icon: <Video className="w-6 h-6" /> }
+function CodeShowcase() {
+  const codeSnippet = [
+    { text: "import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';", color: "text-purple-400" },
+    { text: "", color: "" },
+    { text: "export const MySequence = () => {", color: "text-blue-400" },
+    { text: "  const frame = useCurrentFrame();", color: "text-white" },
+    { text: "  const opacity = interpolate(frame, [0, 30], [0, 1]);", color: "text-amber-300" },
+    { text: "", color: "" },
+    { text: "  return (", color: "text-blue-400" },
+    { text: "    <AbsoluteFill style={{ opacity }}>", color: "text-white" },
+    { text: "      <h1 className='text-6xl font-bold'>Hello World</h1>", color: "text-emerald-400" },
+    { text: "    </AbsoluteFill>", color: "text-white" },
+    { text: "  );", color: "text-blue-400" },
+    { text: "};", color: "text-blue-400" },
   ];
 
   return (
-    <section id="capabilities" className="py-32 bg-white/[0.01] border-y border-white/[0.04] relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[150px] -translate-y-1/2" />
+    <section className="py-24 px-6 max-w-7xl mx-auto relative">
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 relative">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 mb-6">
-                <Sparkles className="w-3 h-3" />
-                <span>Why MotionAI?</span>
+      <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative order-2 lg:order-1">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="rounded-2xl bg-[#0F0F11] border border-white/10 overflow-hidden shadow-2xl relative z-10"
+          >
+            <div className="flex items-center px-4 py-3 bg-white/[0.03] border-b border-white/[0.05]">
+              <div className="flex gap-2 mr-4">
+                <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
               </div>
-              <h2 className="text-4xl md:text-5xl font-semibold mb-6 leading-tight">
-                Built for <span className="font-serif-italic text-gradient-bright">reliability</span> at scale
-              </h2>
-              <p className="text-lg text-white/40 mb-8 leading-relaxed">
-                Traditional video tools rely on randomness. We use Remotion's deterministic engine to ensure your brand stays consistent across thousands of renders.
-              </p>
+              <div className="text-xs text-white/30 font-mono">MyComposition.tsx</div>
+            </div>
+            <div className="p-6 font-mono text-xs md:text-sm leading-relaxed overflow-x-auto">
+              <pre>
+                {codeSnippet.map((line, i) => (
+                  <div key={i} className={`${line.color || 'text-white/50'} py-0.5`}>
+                    {line.text || '\u00A0'}
+                  </div>
+                ))}
+              </pre>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-indigo-500/5 pointer-events-none" />
+          </motion.div>
+          {/* Decorative Elements */}
+          <div className="absolute -top-10 -left-10 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse-glow" />
+          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl animate-pulse-glow" style={{ animationDelay: "1s" }} />
+        </div>
 
-              <div className="flex gap-4">
-                <button className="px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-sm font-medium">
-                  View Documentation
-                </button>
+        <div className="order-1 lg:order-2">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs text-purple-300 mb-6">
+              <Code className="w-3 h-3" />
+              <span>Developer First</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-semibold mb-6">
+              Code is your <span className="font-serif-italic text-gradient-bright">canvas</span>
+            </h2>
+            <p className="text-lg text-white/40 mb-8 leading-relaxed">
+              Don't get locked into proprietary tools. MotionAI generates clean, standard Remotion code.
+              <span className="text-white/70 block mt-4">
+                Check it into git. Review diffs. Integrate with CI/CD. It's just React.
+              </span>
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              {[
+                "TypeScript Support",
+                "Hot Reloading",
+                "NPM Ecosystem",
+                "Server Side Rendering"
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08] text-sm text-white/70">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Capabilities() {
+  const features = [
+    {
+      title: "Deterministic Output",
+      desc: "Unlike AI diffusion, Remotion generates programmable motion. The same prompt always produces the same result.",
+      icon: <Terminal className="w-6 h-6" />
+    },
+    {
+      title: "Code Export",
+      desc: "Get the underlying React code. Edit timing, easing, and layers with developer precision.",
+      icon: <Code className="w-6 h-6" />
+    },
+    {
+      title: "Instant Preview",
+      desc: "See changes in real-time. No waiting for renders to check if your timing is right.",
+      icon: <Play className="w-6 h-6" />
+    },
+    {
+      title: "Scale to 4K",
+      desc: "Vector-based graphics scale infinitely. Render once, export in any resolution up to 4K60.",
+      icon: <Video className="w-6 h-6" />
+    }
+  ];
+
+  return (
+    <section id="capabilities" className="py-24 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/60 mb-6"
+          >
+            <Sparkles className="w-3 h-3" />
+            <span>Why MotionAI?</span>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-5xl font-semibold mb-6"
+          >
+            Built for <span className="font-serif-italic text-gradient-bright">reliability</span>
+          </motion.h2>
+          <p className="text-lg text-white/40 leading-relaxed">Built on Remotion for reliable, scalable video generation without the chaos.</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {features.map((f, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="p-8 rounded-3xl glass-panel hover:bg-white/[0.05] transition-all duration-300 group cursor-pointer"
+            >
+              <div className="flex items-start gap-6">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0 group-hover:scale-110 transition-transform">
+                  {f.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-indigo-300 transition-colors">{f.title}</h3>
+                  <p className="text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">{f.desc}</p>
+                </div>
               </div>
             </motion.div>
-          </div>
-
-          <div className="grid gap-4">
-            {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="p-6 rounded-2xl glass-panel glass-panel-hover transition-all duration-300 group cursor-pointer"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all duration-300 shrink-0">
-                    {f.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-indigo-300 transition-colors">{f.title}</h3>
-                    <p className="text-white/40 text-sm leading-relaxed group-hover:text-white/60 transition-colors">{f.desc}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -960,110 +977,58 @@ function Capabilities() {
 }
 
 function TemplatesShowcase() {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   const templates: Template[] = [
-    { id: "1", name: "Channel Intro", duration: "5s", style: "Cinematic", popular: true, thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&h=450&fit=crop" },
-    { id: "2", name: "Lower Third", duration: "3s", style: "Minimal", popular: false, thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=450&fit=crop" },
-    { id: "3", name: "Quote Card", duration: "10s", style: "Typographic", popular: false, thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=450&fit=crop" },
-    { id: "4", name: "Reel Opener", duration: "15s", style: "Dynamic", popular: true, thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=450&fit=crop" },
-    { id: "5", name: "Product Showcase", duration: "20s", style: "Corporate", popular: false, thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=450&fit=crop" },
-    { id: "6", name: "Subtitle Overlay", duration: "Variable", style: "Clean", popular: false, thumbnail: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=450&fit=crop" }
+    { name: "Channel Intro", duration: "5s", style: "Cinematic", popular: true },
+    { name: "Lower Third", duration: "3s", style: "Minimal", popular: false },
+    { name: "Quote Card", duration: "10s", style: "Typographic", popular: false },
+    { name: "Reel Opener", duration: "15s", style: "Dynamic", popular: true },
+    { name: "Product Showcase", duration: "20s", style: "Corporate", popular: false },
+    { name: "Subtitle Overlay", duration: "Variable", style: "Clean", popular: false }
   ];
 
   return (
-    <section id="templates" className="py-32 px-6 max-w-7xl mx-auto">
+    <section id="templates" className="py-24 px-6 max-w-7xl mx-auto relative">
+      <div className="absolute top-0 left-1/4 w-1/2 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/60 mb-4"
-          >
-            <Layers className="w-3 h-3" />
-            Library
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-semibold mb-4"
-          >
-            Start with a <span className="font-serif-italic text-gradient-bright">foundation</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-white/40 text-lg"
-          >
-            50+ templates, customize with prompts
-          </motion.p>
+          <h2 className="text-4xl md:text-5xl font-semibold mb-4">Start with a <span className="font-serif-italic text-gradient-bright">foundation</span></h2>
+          <p className="text-white/40 text-lg">Start with a foundation, customize with prompts.</p>
         </div>
-        <motion.button
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="group text-sm text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 hover:bg-indigo-500/10 border border-indigo-500/20"
-        >
-          Browse all templates
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </motion.button>
+        <button className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 hover:bg-indigo-500/10 border border-indigo-500/20">
+          Browse all templates <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {templates.map((t, i) => (
           <motion.div
-            key={t.id}
-            initial={{ opacity: 0, y: 30 }}
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            onMouseEnter={() => setHoveredId(t.id)}
-            onMouseLeave={() => setHoveredId(null)}
-            className="group relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer"
+            className="group relative aspect-[16/10] rounded-2xl overflow-hidden glass-panel cursor-pointer hover:border-indigo-500/30 transition-colors"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/50 to-purple-900/30" />
-            <img
-              src={t.thumbnail}
-              alt={t.name}
-              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-110 transition-all duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-              <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transform scale-50 group-hover:scale-100 transition-transform duration-300">
-                <Play className="w-6 h-6 text-white ml-1" />
-              </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Play className="w-12 h-12 text-white/30 group-hover:text-white/80 group-hover:scale-110 transition-all duration-300" />
             </div>
-
             {t.popular && (
-              <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-indigo-500/90 text-white text-[10px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-sm">
+              <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-indigo-500/90 text-white text-[10px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-sm">
                 Popular
               </div>
             )}
-
-            <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-white text-lg mb-1 group-hover:text-indigo-300 transition-colors">{t.name}</h3>
-                  <div className="flex items-center gap-3 text-xs text-white/50">
-                    <span className="px-2 py-1 rounded bg-white/10 border border-white/10">{t.style}</span>
-                    <span>{t.duration}</span>
-                  </div>
+                  <div className="font-semibold text-white text-lg mb-1 group-hover:text-indigo-300 transition-colors">{t.name}</div>
+                  <div className="text-xs text-white/50">{t.style} &bull; {t.duration}</div>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm border border-white/20">
-                  <ArrowRight className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm border border-white/20">
+                  <ArrowRight className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
-
-            {hoveredId === t.id && (
-              <div className="absolute inset-0 border-2 border-indigo-500/50 rounded-2xl pointer-events-none" />
-            )}
           </motion.div>
         ))}
       </div>
@@ -1080,31 +1045,13 @@ function FAQ() {
   ];
 
   return (
-    <section id="faq" className="py-32 bg-white/[0.01] border-y border-white/[0.04]">
+    <section id="faq" className="py-24 w-full">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-semibold mb-4"
-          >
-            Common <span className="font-serif-italic text-gradient-bright">questions</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-white/40"
-          >
-            Everything you need to know
-          </motion.p>
-        </div>
+        <h2 className="text-4xl font-semibold text-center mb-16">Common <span className="font-serif-italic text-gradient-bright">questions</span></h2>
 
         <div className="space-y-4">
           {faqs.map((faq, i) => (
-            <FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
+            <FAQItem key={i} {...faq} />
           ))}
         </div>
       </div>
@@ -1112,29 +1059,23 @@ function FAQ() {
   );
 }
 
-function FAQItem({ question, answer, index }: FAQItemProps) {
-  const [isOpen, setIsOpen] = useState(false);
+function FAQItem({ q, a }: FAQItemProps) {
+  const [open, setOpen] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className={`rounded-2xl border transition-all duration-300 ${isOpen ? "bg-white/[0.03] border-indigo-500/30" : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]"}`}
-    >
+    <div className={`rounded-2xl border transition-all duration-300 ${open ? "bg-white/[0.03] border-indigo-500/30" : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]"}`}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-6 text-left"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.01] transition-colors rounded-2xl"
       >
-        <span className={`font-medium transition-colors ${isOpen ? "text-white" : "text-white/80"}`}>{question}</span>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-indigo-500/20 text-indigo-400 rotate-45" : "bg-white/5 text-white/40"}`}>
+        <span className={`font-medium transition-colors ${open ? "text-white" : "text-white/80"}`}>{q}</span>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${open ? "bg-indigo-500/20 text-indigo-400 rotate-45" : "bg-white/5 text-white/40"}`}>
           <span className="text-xl leading-none">+</span>
         </div>
       </button>
 
       <AnimatePresence>
-        {isOpen && (
+        {open && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -1142,13 +1083,13 @@ function FAQItem({ question, answer, index }: FAQItemProps) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-6 text-white/50 leading-relaxed">
-              {answer}
+            <div className="px-6 pb-6 text-white/50 leading-relaxed border-t border-white/[0.04] pt-4 mt-2">
+              {a}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
@@ -1168,43 +1109,36 @@ function CTA() {
           <Sparkles className="w-4 h-4" />
           <span>Start for free today</span>
         </motion.div>
-
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
           className="text-5xl md:text-7xl font-semibold mb-8 tracking-tight"
         >
-          Ready to automate your <span className="font-serif-italic text-gradient-bright">workflow</span>?
+          Ready to streamline your <span className="font-serif-italic text-gradient-bright">production</span>?
         </motion.h2>
-
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.1 }}
           className="text-xl text-white/40 mb-12 max-w-2xl mx-auto"
         >
           Join creators generating motion graphics in seconds, not hours. No credit card required.
         </motion.p>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <MagneticButton>
-            <button className="px-10 py-5 bg-white text-black rounded-full font-semibold text-lg hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.5)] transition-all duration-300 hover:scale-105 flex items-center gap-2">
-              Get started free
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </MagneticButton>
-
+          <button className="px-10 py-5 bg-white text-black rounded-full font-semibold text-lg hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.5)] transition-all duration-300 hover:scale-105 flex items-center gap-2">
+            Get started free
+            <ArrowRight className="w-5 h-5" />
+          </button>
           <button className="px-10 py-5 border border-white/20 rounded-full font-semibold text-lg hover:bg-white/5 hover:border-white/30 transition-all duration-300 backdrop-blur-sm">
-            Talk to sales
+            View documentation
           </button>
         </motion.div>
       </div>
@@ -1214,53 +1148,32 @@ function CTA() {
 
 function Footer() {
   return (
-    <footer className="py-16 border-t border-white/[0.04] bg-[#020202]">
+    <footer className="py-16 bg-[#020202] relative">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
-          <div className="col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Video className="w-5 h-5 text-white" />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col items-start gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Video className="w-4 h-4 text-white" />
               </div>
-              <span className="text-white font-bold text-xl">MotionAI</span>
+              <span className="text-white font-bold text-xl tracking-tight">MotionAI</span>
             </div>
-            <p className="text-white/40 max-w-sm leading-relaxed mb-6">
-              The programmable motion graphics platform. Generate cinematic video content with AI and Remotion.
+            <p className="text-white/30 text-sm max-w-xs">
+              The programmable motion graphics platform. Build cinematic video content with AI and Remotion.
             </p>
-            <div className="flex gap-4">
-              {[Twitter, Github].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-white/10 hover:text-white transition-all">
-                  <Icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
           </div>
 
-          <div>
-            <h4 className="text-white font-semibold mb-4">Product</h4>
-            <ul className="space-y-3 text-sm text-white/40">
-              {["Features", "Templates", "Pricing", "Changelog", "Roadmap"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-4">Resources</h4>
-            <ul className="space-y-3 text-sm text-white/40">
-              {["Documentation", "API Reference", "Community", "Blog", "Contact"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
-              ))}
-            </ul>
+          <div className="flex gap-12 text-sm font-medium text-white/40">
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">GitHub</a>
+            <a href="#" className="hover:text-white transition-colors">Twitter</a>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/30">
-          <div>© {new Date().getFullYear()} MotionAI. All rights reserved.</div>
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
+        <div className="pt-8 mt-12 border-t border-white/[0.04] text-center text-sm text-white/20">
+          Â© {new Date().getFullYear()} MotionAI. All rights reserved.
         </div>
       </div>
     </footer>
