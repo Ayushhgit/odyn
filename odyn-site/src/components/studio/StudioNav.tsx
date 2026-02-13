@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Video, Plus, Search, Layers, Film, CreditCard,
     ChevronDown, ChevronRight, User, LogOut, Settings,
-    LayoutDashboard, Crown, ArrowRight, Check
+    LayoutDashboard, Crown, ArrowRight, Check, X
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,6 +25,7 @@ const recentProjects = [
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     const [avatarOpen, setAvatarOpen] = useState(false);
     const [recentsOpen, setRecentsOpen] = useState(true);
+    const [upgradeDismissed, setUpgradeDismissed] = useState(false);
 
     return (
         <>
@@ -132,8 +133,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                                         >
                                             {/* Status dot */}
                                             <span className={`w-2 h-2 rounded-full shrink-0 ${p.status === "complete"
-                                                    ? "bg-emerald-400/70"
-                                                    : "bg-amber-400/70 animate-pulse"
+                                                ? "bg-emerald-400/70"
+                                                : "bg-amber-400/70 animate-pulse"
                                                 }`} />
                                             <span className="text-white/40 group-hover:text-white/70 truncate text-left font-medium transition-colors duration-150">
                                                 {p.name}
@@ -150,45 +151,62 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 </div>
 
                 {/* ── 6. Upgrade Card ── */}
-                <div className="px-4 pb-2">
-                    <div className="upgrade-card rounded-2xl p-4">
-                        <div className="relative z-10">
-                            {/* Header */}
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="crown-glow w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/25 to-amber-500/15 flex items-center justify-center border border-amber-500/25">
-                                    <Crown className="w-4 h-4 text-amber-400" />
-                                </div>
-                                <div>
-                                    <div className="text-sm font-semibold text-white">Upgrade to Pro</div>
-                                    <div className="text-[11px] text-white/25">Unlock the full experience</div>
-                                </div>
-                            </div>
+                <AnimatePresence>
+                    {!upgradeDismissed && (
+                        <motion.div
+                            initial={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            className="px-4 pb-2 overflow-hidden"
+                        >
+                            <div className="upgrade-card rounded-2xl p-4 relative">
+                                {/* Close button */}
+                                <button
+                                    onClick={() => setUpgradeDismissed(true)}
+                                    className="absolute top-3 right-3 z-20 w-6 h-6 rounded-lg flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/[0.06] transition-all duration-150"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
 
-                            {/* Benefits */}
-                            <div className="space-y-1.5 mb-4">
-                                {[
-                                    "1080p & 4K Export",
-                                    "No Watermark",
-                                    "Faster Queue",
-                                ].map((b) => (
-                                    <div key={b} className="flex items-center gap-2 text-[11px] text-white/35">
-                                        <Check className="w-3 h-3 text-indigo-400/60 shrink-0" />
-                                        {b}
+                                <div className="relative z-10">
+                                    {/* Header */}
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="crown-glow w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/25 to-amber-500/15 flex items-center justify-center border border-amber-500/25">
+                                            <Crown className="w-4 h-4 text-amber-400" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-semibold text-white">Upgrade to Pro</div>
+                                            <div className="text-[11px] text-white/25">Unlock the full experience</div>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
 
-                            {/* CTA */}
-                            <motion.button
-                                whileTap={{ scale: 0.98 }}
-                                className="upgrade-btn w-full py-2.5 rounded-xl text-black font-semibold text-sm flex items-center justify-center gap-2"
-                            >
-                                Upgrade Now
-                                <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
-                            </motion.button>
-                        </div>
-                    </div>
-                </div>
+                                    {/* Benefits */}
+                                    <div className="space-y-1.5 mb-4">
+                                        {[
+                                            "1080p & 4K Export",
+                                            "No Watermark",
+                                            "Faster Queue",
+                                        ].map((b) => (
+                                            <div key={b} className="flex items-center gap-2 text-[11px] text-white/35">
+                                                <Check className="w-3 h-3 text-indigo-400/60 shrink-0" />
+                                                {b}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* CTA */}
+                                    <motion.button
+                                        whileTap={{ scale: 0.98 }}
+                                        className="upgrade-btn w-full py-2.5 rounded-xl text-black font-semibold text-sm flex items-center justify-center gap-2"
+                                    >
+                                        Upgrade Now
+                                        <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* ── 7. User Profile Section ── */}
                 <div className="px-4 pb-4 pt-2 border-t border-white/[0.04]">
