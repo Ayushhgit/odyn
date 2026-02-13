@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Video, Plus, Search, Layers, Film, CreditCard,
+    Plus, Search, Layers, Film, CreditCard,
     ChevronDown, ChevronRight, User, LogOut, Settings,
     LayoutDashboard, Crown, ArrowRight, Check, X
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface SidebarProps {
@@ -40,8 +41,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 {/* ── 1. Logo Section ── */}
                 <div className="px-5 pt-6 pb-4">
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="logo-glow w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-shadow duration-300">
-                            <Video className="w-5 h-5 text-white" />
+                        <div className="logo-glow">
+                            <Image src="/odyn_logo.png" alt="Odyn" width={40} height={40} className="rounded-xl shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-shadow duration-300" />
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-white font-bold text-xl tracking-tight">Odyn</span>

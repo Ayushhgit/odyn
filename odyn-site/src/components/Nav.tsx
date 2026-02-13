@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Video } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Nav() {
@@ -20,12 +20,10 @@ export default function Nav() {
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] px-4 py-2 rounded-2xl"
+                    className="flex items-center gap-3"
                 >
-                    <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center neon-glow shadow-lg">
-                        <Video className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-white font-bold text-lg tracking-tight">Odyn</span>
+                    <Image src="/odyn_logo.png" alt="Odyn" width={80} height={80} className="rounded-xl" />
+                    <span className="text-white font-bold text-xl tracking-tight">Odyn</span>
                 </motion.div>
 
                 <motion.nav
