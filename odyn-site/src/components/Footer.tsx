@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Video } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
     return (
@@ -11,9 +11,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="flex flex-col items-start gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                                <Video className="w-4 h-4 text-white" />
-                            </div>
+                            <Image src="/odyn_logo.png" alt="Odyn" width={32} height={32} className="rounded-lg shadow-lg" />
                             <span className="text-white font-bold text-xl tracking-tight">Odyn</span>
                         </div>
                         <p className="text-white/30 text-sm max-w-xs">
