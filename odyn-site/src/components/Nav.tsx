@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Video } from "lucide-react";
+import Link from "next/link";
 
 export default function Nav() {
     const [scrolled, setScrolled] = useState(false);
@@ -51,9 +52,9 @@ export default function Nav() {
                     <button className="hidden md:block px-5 py-2.5 text-sm text-white/70 hover:text-white transition-colors font-medium bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl hover:bg-white/[0.08]">
                         Sign in
                     </button>
-                    <button className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all duration-300">
+                    <Link href="/studio" className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all duration-300 inline-block">
                         Get Started
-                    </button>
+                    </Link>
                 </motion.div>
             </div>
         </header>
